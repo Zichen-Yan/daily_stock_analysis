@@ -213,21 +213,20 @@ class YfinanceFetcher(BaseFetcher):
         date, open, high, low, close, volume, amount, pct_chg
         """
         df = df.copy()
-        # TEMP DEBUG
-        print(f"DEBUG _normalize_data columns: {df.columns.tolist()}")
-        print(f"DEBUG _normalize_data index.name: {df.index.name}")
-        print(df.head(2))
-        # END TEMP DEBUG
-    
+        
         # 处理 MultiIndex 列名（新版 yfinance 返回格式）
         # 例如: ('Close', 'AMD') -> 'Close'
         if isinstance(df.columns, pd.MultiIndex):
             logger.debug("检测到 MultiIndex 列名，进行扁平化处理")
             # 取第一级列名（Price level: Close, High, Low, etc.）
             df.columns = df.columns.get_level_values(0)
+            df = df.loc[:, ~df.columns.duplicated()]
 
         # 重置索引，将日期从索引变为列
         df = df.reset_index()
+
+        first_col = df.columns[0]
+        df = df.rename(columns={first_col: 'date'})
 
         # 列名映射（yfinance 使用首字母大写）
         column_mapping = {
