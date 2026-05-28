@@ -209,7 +209,13 @@ class YfinanceFetcher(BaseFetcher):
         date, open, high, low, close, volume, amount, pct_chg
         """
         df = df.copy()
-
+        # TEMP DEBUG
+        print(f"DEBUG _normalize_data columns: {df.columns.tolist()}")
+        print(f"DEBUG _normalize_data index.name: {df.index.name}")
+        print(df.head(2))
+        # END TEMP DEBUG
+        raise
+    
         # 处理 MultiIndex 列名（新版 yfinance 返回格式）
         # 例如: ('Close', 'AMD') -> 'Close'
         if isinstance(df.columns, pd.MultiIndex):
