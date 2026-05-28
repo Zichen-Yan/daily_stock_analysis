@@ -218,7 +218,6 @@ class YfinanceFetcher(BaseFetcher):
         print(f"DEBUG _normalize_data index.name: {df.index.name}")
         print(df.head(2))
         # END TEMP DEBUG
-        raise
     
         # 处理 MultiIndex 列名（新版 yfinance 返回格式）
         # 例如: ('Close', 'AMD') -> 'Close'
