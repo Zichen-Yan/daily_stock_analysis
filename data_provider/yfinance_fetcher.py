@@ -185,26 +185,11 @@ class YfinanceFetcher(BaseFetcher):
                 multi_level_index=False
             )
 
-            # After yf.download():
-            if isinstance(df.columns, pd.MultiIndex):
-                # Get ticker names at level 1, try to match case-insensitively
-                ticker_level = df.columns.get_level_values(1).str.upper()
-                mask = ticker_level == yf_code.upper()
-                if mask.any():
-                    df = df.loc[:, mask].copy()
-                    # Flatten the remaining single-ticker MultiIndex
-                    df.columns = df.columns.get_level_values(0)
-                else:
-                    # Fallback: just drop the ticker level entirely
-                    df.columns = df.columns.get_level_values(0)
-                    # Remove duplicate columns if any
-                    df = df.loc[:, ~df.columns.duplicated()]
-
             if df.empty:
                 raise DataFetchError(f"Yahoo Finance 未查询到 {stock_code} 的数据")
-
+    
             return df
-
+    
         except Exception as e:
             if isinstance(e, DataFetchError):
                 raise
